@@ -19,4 +19,3 @@ public class Usuario {
     private int tipoAcesso; // 1 para Médico, 2 para Recepção, 3 para Paciente
     private boolean ativo; // Campo para indicar se o usuário está ativo ou não
 }
-

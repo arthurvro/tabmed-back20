@@ -20,16 +20,17 @@ public class Atendimento {
     @JoinColumn(name = "paciente_id", nullable = false)
     private Usuario paciente;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String historicoPaciente;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String queixasPaciente;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String laudoMedico;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String receitaMedica;
 }
+
 

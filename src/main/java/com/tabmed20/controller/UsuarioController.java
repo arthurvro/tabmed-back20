@@ -27,70 +27,59 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> listarUsuarios() {
-        return ResponseEntity.ok(usuarioService.listarUsuarios());
+    public ResponseEntity<?> listarUsuarios(@RequestHeader("tipoAcesso") Integer tipoAcesso) {
+        if (tipoAcesso != null && (tipoAcesso == 1 || tipoAcesso == 2)) { // Médicos e recepcionistas podem listar usuários
+            return ResponseEntity.ok(usuarioService.listarUsuarios());
+        } else {
+            return ResponseEntity.status(403).body("Acesso negado");
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable Long id) {
-        return usuarioService.buscarUsuarioPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> buscarUsuarioPorId(@PathVariable Long id, @RequestHeader("tipoAcesso") Integer tipoAcesso) {
+        if (tipoAcesso != null && tipoAcesso == 2) {
+            return usuarioService.buscarUsuarioPorId(id)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        } else {
+            return ResponseEntity.status(403).body("Acesso negado");
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<?> criarUsuario(@RequestBody Usuario usuario, @RequestHeader("tipoAcesso") Integer tipoAcesso) {
+        if (tipoAcesso != null && tipoAcesso == 2) {
+            Usuario novoUsuario = usuarioService.salvarUsuario(usuario);
+            return ResponseEntity.ok(novoUsuario);
+        } else {
+            return ResponseEntity.status(403).body("Acesso negado");
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> atualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuarioAtualizado) {
-        try {
-            return ResponseEntity.ok(usuarioService.atualizarUsuario(id, usuarioAtualizado));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> atualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuarioAtualizado, @RequestHeader("tipoAcesso") Integer tipoAcesso) {
+        if (tipoAcesso != null && tipoAcesso == 2) {
+            try {
+                return ResponseEntity.ok(usuarioService.atualizarUsuario(id, usuarioAtualizado));
+            } catch (RuntimeException e) {
+                return ResponseEntity.notFound().build();
+            }
+        } else {
+            return ResponseEntity.status(403).body("Acesso negado");
         }
     }
 
     @PutMapping("/ativar-desativar/{id}")
-    public ResponseEntity<Void> ativarDesativarUsuario(@PathVariable Long id) {
-        try {
-            usuarioService.ativarDesativarUsuario(id);
-            return ResponseEntity.ok().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> ativarDesativarUsuario(@PathVariable Long id, @RequestHeader("tipoAcesso") Integer tipoAcesso) {
+        if (tipoAcesso != null && tipoAcesso == 2) {
+            try {
+                usuarioService.ativarDesativarUsuario(id);
+                return ResponseEntity.ok().build();
+            } catch (RuntimeException e) {
+                return ResponseEntity.notFound().build();
+            }
+        } else {
+            return ResponseEntity.status(403).body("Acesso negado");
         }
     }
 }
-
-//package com.tabmed20.controller;
-//
-//import com.tabmed20.model.Usuario;
-//import com.tabmed20.services.UsuarioService;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestBody;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RestController;
-//
-//import java.util.Optional;
-//
-//@RestController
-//@RequestMapping("/api/usuarios")
-//public class UsuarioController {
-//    @Autowired
-//    private UsuarioService usuarioService;
-//
-//    @PostMapping("/login")
-//    public ResponseEntity<?> login(@RequestBody Usuario usuario) {
-//        Optional<Usuario> usuarioLogado = usuarioService.buscarUsuarioPorCpfESenha(usuario.getCpf(), usuario.getSenha());
-//        if (usuarioLogado.isPresent()) {
-//            return ResponseEntity.ok(usuarioLogado.get());
-//        } else {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-//    }
-//
-//    @PostMapping("/cadastro")
-//    public ResponseEntity<Usuario> cadastrarUsuario(@RequestBody Usuario usuario) {
-//        Usuario novoUsuario = usuarioService.salvarUsuario(usuario);
-//        return ResponseEntity.ok(novoUsuario);
-//    }
-//}
