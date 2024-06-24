@@ -2,7 +2,7 @@ package com.tabmed20.controller;
 
 import com.tabmed20.model.Atendimento;
 import com.tabmed20.model.Usuario;
-import com.tabmed20.service.AtendimentoService;
+import com.tabmed20.services.AtendimentoService;
 import com.tabmed20.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +43,10 @@ public class AtendimentoController {
 
     @GetMapping("/paciente/{pacienteId}")
     public ResponseEntity<List<Atendimento>> listarAtendimentosPorPaciente(@PathVariable Long pacienteId) {
-        return ResponseEntity.ok(atendimentoService.listarAtendimentosPorPaciente(pacienteId));
+        List<Atendimento> atendimentos = atendimentoService.listarAtendimentosPorPaciente(pacienteId);
+        for (Atendimento atendimento : atendimentos) {
+            atendimento.getMedico().setSenha(null); // Para não enviar a senha do médico
+        }
+        return ResponseEntity.ok(atendimentos);
     }
 }

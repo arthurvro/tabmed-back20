@@ -1,4 +1,4 @@
-package com.tabmed20.service;
+package com.tabmed20.services;
 
 import com.tabmed20.model.Atendimento;
 import com.tabmed20.repository.AtendimentoRepository;
