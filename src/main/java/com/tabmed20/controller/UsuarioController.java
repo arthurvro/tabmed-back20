@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -16,10 +17,13 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @PostMapping("/login")
-    public ResponseEntity<Usuario> login(@RequestBody Usuario usuario) {
-        return usuarioService.buscarUsuarioPorCpfESenha(usuario.getCpf(), usuario.getSenha())
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(401).build());
+    public ResponseEntity<?> login(@RequestBody Usuario usuario) {
+        Optional<Usuario> usuarioAtivo = usuarioService.validarUsuarioAtivo(usuario.getCpf(), usuario.getSenha());
+        if (usuarioAtivo.isPresent()) {
+            return ResponseEntity.ok(usuarioAtivo.get());
+        } else {
+            return ResponseEntity.status(401).body("Usuário não encontrado ou desativado.");
+        }
     }
 
     @GetMapping

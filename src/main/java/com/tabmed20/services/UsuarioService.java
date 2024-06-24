@@ -54,4 +54,12 @@ public class UsuarioService {
             throw new RuntimeException("Usuário não encontrado");
         }
     }
+
+    public Optional<Usuario> validarUsuarioAtivo(String cpf, String senha) {
+        Optional<Usuario> usuario = usuarioRepository.findByCpfAndSenha(cpf, senha);
+        if (usuario.isPresent() && usuario.get().isAtivo()) {
+            return usuario;
+        }
+        return Optional.empty();
+    }
 }
