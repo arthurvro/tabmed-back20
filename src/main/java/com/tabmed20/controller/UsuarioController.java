@@ -33,6 +33,25 @@ public class UsuarioController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Usuario> atualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuarioAtualizado) {
+        try {
+            return ResponseEntity.ok(usuarioService.atualizarUsuario(id, usuarioAtualizado));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/ativar-desativar/{id}")
+    public ResponseEntity<Void> ativarDesativarUsuario(@PathVariable Long id) {
+        try {
+            usuarioService.ativarDesativarUsuario(id);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
 
 //package com.tabmed20.controller;

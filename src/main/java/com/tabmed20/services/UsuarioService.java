@@ -28,4 +28,30 @@ public class UsuarioService {
     public List<Usuario> listarUsuarios() {
         return usuarioRepository.findAll();
     }
+    public Usuario atualizarUsuario(Long id, Usuario usuarioAtualizado) {
+        Optional<Usuario> usuarioExistente = usuarioRepository.findById(id);
+        if (usuarioExistente.isPresent()) {
+            Usuario usuario = usuarioExistente.get();
+            usuario.setNome(usuarioAtualizado.getNome());
+            usuario.setSobrenome(usuarioAtualizado.getSobrenome());
+            usuario.setCpf(usuarioAtualizado.getCpf());
+            usuario.setSenha(usuarioAtualizado.getSenha());
+            usuario.setTipoAcesso(usuarioAtualizado.getTipoAcesso());
+            usuario.setAtivo(usuarioAtualizado.isAtivo());
+            return usuarioRepository.save(usuario);
+        } else {
+            throw new RuntimeException("Usuário não encontrado");
+        }
+    }
+
+    public void ativarDesativarUsuario(Long id) {
+        Optional<Usuario> usuario = usuarioRepository.findById(id);
+        if (usuario.isPresent()) {
+            Usuario u = usuario.get();
+            u.setAtivo(!u.isAtivo());
+            usuarioRepository.save(u);
+        } else {
+            throw new RuntimeException("Usuário não encontrado");
+        }
+    }
 }

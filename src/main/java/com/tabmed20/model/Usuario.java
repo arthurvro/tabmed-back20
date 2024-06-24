@@ -1,55 +1,22 @@
 package com.tabmed20.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nome;
     private String sobrenome;
     private String cpf;
     private String senha;
-    private int tipoAcesso; // 1: Medico, 2: Recepcao, 3: Cliente
-
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public String getNome() {
-        return nome;
-    }
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-    public String getSobrenome() {
-        return sobrenome;
-    }
-    public void setSobrenome(String sobrenome) {
-        this.sobrenome = sobrenome;
-    }
-    public String getCpf() {
-        return cpf;
-    }
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-    public String getSenha() {
-        return senha;
-    }
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-    public int getTipoAcesso() {
-        return tipoAcesso;
-    }
-    public void setTipoAcesso(int tipoAcesso) {
-        this.tipoAcesso = tipoAcesso;
-    }
+    private int tipoAcesso; // 1 para Médico, 2 para Recepção, 3 para Paciente
+    private boolean ativo; // Campo para indicar se o usuário está ativo ou não
 }
+
